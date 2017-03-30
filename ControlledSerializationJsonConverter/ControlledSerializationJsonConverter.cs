@@ -8,7 +8,7 @@ namespace Vse.Web.Serialization
     public class ControlledSerializationJsonConverter : JavaScriptConverter
     {
         #region StandardSimpleTypes
-        public static readonly IReadOnlyCollection<Type> StandardSimpleTypes = new[]
+        public static readonly IEnumerable<Type> StandardSimpleTypes = new[]
             {
                 typeof(bool),
                 typeof(bool?),

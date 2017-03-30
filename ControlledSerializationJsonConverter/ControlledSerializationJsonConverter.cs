@@ -109,13 +109,10 @@ namespace Vse.Web.Serialization
                     }
                     else if (converters != null && converters.TryGetValue(propertyInfo.PropertyType, out Func<object, string> func))
                     {
-                        if (o != null)
-                        {
-                            string propertyName = propertyInfo.Name;
-                            var value = propertyInfo.GetValue(o, null);
-                            var stringValue = (value == null) ? null : func(value);
-                            standardTypesValues.Add(propertyName, stringValue);
-                        }
+                        string propertyName = propertyInfo.Name;
+                        var value = propertyInfo.GetValue(o, null);
+                        var stringValue = (value == null) ? null : func(value);
+                        standardTypesValues.Add(propertyName, stringValue);
                     }
                     else
                     {

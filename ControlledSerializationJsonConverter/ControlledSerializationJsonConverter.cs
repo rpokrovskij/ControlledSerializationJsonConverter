@@ -7,9 +7,12 @@ namespace Vse.Web.Serialization
 {
     public class ControlledSerializationJsonConverter : JavaScriptConverter
     {
+        public List<object> history;
+        public int currentRecursionDepth;
+        readonly ControlledSerializationJsonConverter parent;
+
         #region StandardSimpleTypes
-        public static readonly IEnumerable<Type> StandardSimpleTypes = new[]
-            {
+        public static readonly IEnumerable<Type> StandardSimpleTypes = new[] {
                 typeof(bool),
                 typeof(bool?),
                 typeof(byte),
@@ -49,9 +52,8 @@ namespace Vse.Web.Serialization
         #endregion
 
         private readonly int recursionDepth = 1;
-        private readonly int currentRecursionDepth = 1;
         private readonly bool ignoreDuplicates;
-        private readonly List<object> history;
+        private readonly bool ignoreNotSupported;
         private readonly IEnumerable<Type> supportedTypes;
         private readonly IEnumerable<Type> simpleTypes;
         private readonly Dictionary<Type, Func<object, string>> converters;
@@ -64,30 +66,40 @@ namespace Vse.Web.Serialization
         /// <param name="converters">Some referenced types on complex types can be configured as simple with custome serializers</param>
         /// <param name="recursionDepth">Control recursion</param>
         /// <param name="ignoreDuplicates"></param>
+        /// <param name="ignoreNotSupported"></param>
         public ControlledSerializationJsonConverter(
             IEnumerable<Type> supportedTypes,
-            IEnumerable<Type> simpleTypes = null,
-            Dictionary<Type, Func<object, string>> converters = null,
             int recursionDepth = 1,
-            bool ignoreDuplicates = false) :
-            this(supportedTypes, simpleTypes, converters, recursionDepth, ignoreDuplicates, 1, new List<object>())
+            bool ignoreDuplicates = false,
+            bool ignoreNotSupported = false,
+            IEnumerable<Type> simpleTypes = null,
+            Dictionary<Type, Func<object, string>> converters = null
+            ) :
+            this(supportedTypes, recursionDepth, ignoreDuplicates, ignoreNotSupported, simpleTypes, converters, 1, new List<object>(), null)
         {
+
         }
 
         private ControlledSerializationJsonConverter(
             IEnumerable<Type> supportedTypes,
+            int recursionDepth,
+            bool ignoreDuplicates,
+            bool ignoreNotSupported,
             IEnumerable<Type> simpleTypes,
             Dictionary<Type, Func<object, string>> converters,
-            int recursionDepth,
-            bool ignoreDuplicates, int currentRecursionDepth, List<object> history)
+            int currentRecursionDepth, List<object> history, ControlledSerializationJsonConverter parent)
         {
-            this.recursionDepth = recursionDepth;
-            this.ignoreDuplicates = ignoreDuplicates;
-            this.supportedTypes = supportedTypes;
-            this.converters = converters;
-            this.simpleTypes = simpleTypes ?? StandardSimpleTypes;
+            if (supportedTypes == null || supportedTypes.Count() == 0)
+                throw new ArgumentException("SupportedTypes can't be null or empty", nameof(supportedTypes));
+            this.recursionDepth     = recursionDepth;
+            this.ignoreDuplicates   = ignoreDuplicates;
+            this.ignoreNotSupported = ignoreNotSupported;
+            this.supportedTypes     = supportedTypes;
+            this.converters         = converters;
+            this.simpleTypes        = simpleTypes ?? StandardSimpleTypes;
             this.currentRecursionDepth = currentRecursionDepth;
             this.history = history;
+            this.parent = parent;
         }
 
         public override IDictionary<string, object> Serialize(object o, JavaScriptSerializer serializer)
@@ -116,25 +128,37 @@ namespace Vse.Web.Serialization
                     }
                     else
                     {
+
                         if (currentRecursionDepth <= recursionDepth)
                         {
                             string propertyName = propertyInfo.Name;
                             var value = propertyInfo.GetValue(o, null);
                             if (value != null)
                             {
-                                if (!ignoreDuplicates)
+                                if (ignoreNotSupported)
                                 {
-                                    var dictionaryProperties = LayerUp(propertyName, value);
-                                    standardTypesValues.Add(propertyName, dictionaryProperties);
+                                    if (supportedTypes.Contains(value.GetType()))
+                                    {
+                                        var dictionaryProperties = LayerUp(propertyName, value);
+                                        standardTypesValues.Add(propertyName, dictionaryProperties);
+                                    }
                                 }
-                                else if (!history.Contains(value))
+                                else if (ignoreDuplicates)
+                                {
+                                    if (!history.Contains(value))
+                                    {
+                                        var dictionaryProperties = LayerUp(propertyName, value);
+                                        standardTypesValues.Add(propertyName, dictionaryProperties);
+                                    }
+                                }
+                                else
                                 {
                                     var dictionaryProperties = LayerUp(propertyName, value);
                                     standardTypesValues.Add(propertyName, dictionaryProperties);
-
                                 }
                             }
                         }
+
                     }
                 }
             }
@@ -143,9 +167,9 @@ namespace Vse.Web.Serialization
 
         private IDictionary<string, object> LayerUp(string propertyName, object value)
         {
-            var js = new ControlledSerializationJsonConverter(supportedTypes, simpleTypes, converters, recursionDepth - currentRecursionDepth, ignoreDuplicates, currentRecursionDepth, history);
+            var js = new ControlledSerializationJsonConverter(supportedTypes, recursionDepth - currentRecursionDepth, ignoreDuplicates, ignoreNotSupported, simpleTypes, 
+                converters, currentRecursionDepth, history, this);
             var jss = new JavaScriptSerializer();
-            jss.RegisterConverters(new[] { new ControlledSerializationJsonConverter(supportedTypes, simpleTypes) });
             var dictionary = js.Serialize(value, jss);
             return dictionary;
         }

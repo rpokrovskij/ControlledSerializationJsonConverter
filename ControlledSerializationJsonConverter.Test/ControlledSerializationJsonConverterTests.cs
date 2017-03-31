@@ -17,22 +17,16 @@ namespace Vse.Web.Serialization.Test
         public void RecursiveJavaScriptSerializer()
         {
             var item = Item.CreateSample();
-            //var x = Microsoft.AspNetCore.Mvc.Formatters.Json.
 
             var jss1 = new JavaScriptSerializer();
-            //jss.RegisterConverters(new[] { new CircularScriptConverter(new[] { typeof(Item) }, 30, false) });
-            jss1.RegisterConverters(new[] { new ControlledSerializationJsonConverter(new[] { typeof(Item) }, ControlledSerializationJsonConverter.StandardSimpleTypes, null, 50, false) });
-            // ef types
-            //types.AddRange(Assembly.GetAssembly(typeof(DbContext)).GetTypes());
-            // model types
-            // types.AddRange(Assembly.GetAssembly(typeof(BaseViewModel)).GetTypes());
+            jss1.RegisterConverters(new[] { new ControlledSerializationJsonConverter(new[] { typeof(Item) }, 50, false, false, ControlledSerializationJsonConverter.StandardSimpleTypes, null) });
 
             var json1 = jss1.Serialize(item);
             if (json1.Length < 1000)
                 throw new ApplicationException("History doesn't work. Case 0");
 
             var jss2 = new JavaScriptSerializer();
-            jss2.RegisterConverters(new[] { new ControlledSerializationJsonConverter(new[] { typeof(Item) }, ControlledSerializationJsonConverter.StandardSimpleTypes, null, 50, true) });
+            jss2.RegisterConverters(new[] { new ControlledSerializationJsonConverter(new[] { typeof(Item) }, 50, true, false) });
             var json2 = jss2.Serialize(item);
             if (json2 != @"{""Number"":1,""Name"":""a"",""Child"":{""Number"":2,""Name"":""b"",""Child"":{""Number"":3,""Name"":""c""}}}")
                 throw new ApplicationException("History doesn't work. Case 1");
@@ -43,9 +37,26 @@ namespace Vse.Web.Serialization.Test
         {
             var item = Item.CreateSample();
             var jss2 = new JavaScriptSerializer();
-            jss2.RegisterConverters(new[] { new ControlledSerializationJsonConverter(new[] { typeof(Item) }, ControlledSerializationJsonConverter.StandardSimpleTypes, null, 50, true) });
+            jss2.RegisterConverters(new[] { new ControlledSerializationJsonConverter(new[] { typeof(Item) }, 50, true, false) });
             var json2 = jss2.Serialize(item);
             if (json2 != @"{""Number"":1,""Name"":""a"",""Child"":{""Number"":2,""Name"":""b"",""Child"":{""Number"":3,""Name"":""c""}}}")
+                throw new ApplicationException("History doesn't work. Case 1");
+        }
+
+        [TestMethod]
+        public void RecursiveJavaScriptSerializerWithHistoryAndNotSupported()
+        {
+            var item = Item.CreateSampleWithCultureInfo();
+            var jss2 = new JavaScriptSerializer();
+            var converter = new ControlledSerializationJsonConverter(
+                    supportedTypes: new[] { typeof(Item) },
+                    simpleTypes: ControlledSerializationJsonConverter.StandardSimpleTypes,
+                    ignoreNotSupported: true,
+                    recursionDepth: 3,
+                    ignoreDuplicates: true);
+            jss2.RegisterConverters(new[] { converter });
+            var json2 = jss2.Serialize(item);
+            if (json2 != @"{""Number"":1,""Name"":""a"",""Child"":{""Number"":2,""Name"":""b"",""Child"":{""Number"":3,""Name"":""c"",""Child"":{""Number"":1,""Name"":""a""}}}}")
                 throw new ApplicationException("History doesn't work. Case 1");
         }
 
@@ -54,11 +65,16 @@ namespace Vse.Web.Serialization.Test
         {
             var item = Item.CreateSampleWithCultureInfo();
             var jss2 = new JavaScriptSerializer();
-            var converters = new Dictionary<Type, Func<object, string>>()
-            {
-                { typeof(System.Globalization.CultureInfo), (o) => ((System.Globalization.CultureInfo)o).ToString()}
-            };
-            jss2.RegisterConverters(new[] { new ControlledSerializationJsonConverter(new[] { typeof(Item) }, ControlledSerializationJsonConverter.StandardSimpleTypes, converters, 50, true) });
+            var converter = new ControlledSerializationJsonConverter(
+                    supportedTypes: new[] { typeof(Item)},
+                    simpleTypes: ControlledSerializationJsonConverter.StandardSimpleTypes,
+                    converters: new Dictionary<Type, Func<object, string>>()
+                    {
+                       { typeof(CultureInfo), (o) => ((CultureInfo)o).ToString()}
+                    },
+                    recursionDepth: 50,
+                    ignoreDuplicates: true);
+            jss2.RegisterConverters(new[] { converter });
             var json2 = jss2.Serialize(item);
             if (json2 != @"{""Number"":1,""Name"":""a"",""Child"":{""Number"":2,""Name"":""b"",""Child"":{""Number"":3,""Name"":""c"",""CultureInfo"":null},""CultureInfo"":null},""CultureInfo"":""en-US""}")
                 throw new ApplicationException("History doesn't work. Case 1");

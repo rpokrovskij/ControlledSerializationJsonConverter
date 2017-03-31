@@ -61,6 +61,33 @@ namespace Vse.Web.Serialization.Test
         }
 
         [TestMethod]
+        public void RecursiveJavaScriptSerializerConfigurationException()
+        {
+            var item = Item.CreateSample();
+
+            var jss1 = new JavaScriptSerializer();
+            try
+            {
+                jss1.RegisterConverters(new[] { new ControlledSerializationJsonConverter(null, 50, false, false, ControlledSerializationJsonConverter.StandardSimpleTypes, null) });
+                var json1 = jss1.Serialize(item);
+            }
+            catch (ArgumentException)
+            {
+            }
+
+            var jss2 = new JavaScriptSerializer();
+            
+            try
+            {
+                jss2.RegisterConverters(new[] { new ControlledSerializationJsonConverter(new List<Type>(), 50, false, false, ControlledSerializationJsonConverter.StandardSimpleTypes, null) });
+                var json1 = jss2.Serialize(item);
+            }
+            catch (ArgumentException)
+            {
+            }
+        }
+
+        [TestMethod]
         public void RecursiveJavaScriptSerializerWithHistoryAndCustomConverters()
         {
             var item = Item.CreateSampleWithCultureInfo();
@@ -231,6 +258,8 @@ namespace Vse.Web.Serialization.Test
                     return supportedTypes;
                 }
             }
+
+
         }
     }
 }

@@ -1,7 +1,7 @@
 $mstestLocation = 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\mstest.exe'
 $openCoverPath = 'packages\Opencover.4.6.519\Tools\OpenCover.Console.exe'
 $reportGeneratorPath = 'packages\ReportGenerator.2.5.6\Tools\ReportGenerator.exe'
-$TestsFolder1 = $SolutionFolder+'\ControlledSerializationJsonConverter.Test'
+$TestsFolder1 = 'ControlledSerializationJsonConverter.Test'
 
 $ErrorActionPreference = 'Stop'
 
@@ -41,7 +41,7 @@ If (!(Test-Path "$MsTestFolder")){
 
 $openCoverLocation = $SolutionFolder + '\'+ $openCoverPath
 $TrxFile1 = "$MsTestFolder\ControlledSerializationJsonConverterTests.trx"
-$TestDll1 = $TestsFolder1 + '\bin\Debug\Vse.Web.Serialization.Test.dll' 
+$TestDll1 = $SolutionFolder+"\"+$TestsFolder1 + '\bin\Debug\Vse.Web.Serialization.Test.dll' 
 $targetargs = "/testcontainer:$TestDll1 /resultsfile:$TrxFile1"
 $filters='+[Vse.*]* -[Vse.Web.Serialization.Test]*'
 $reportGeneratorLocation = $SolutionFolder + '\'+$reportGeneratorPath

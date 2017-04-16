@@ -5,7 +5,7 @@ var item =  ... ;  // object you want to serialize
 if (item!=null)
 {
         var converter = new ControlledSerializationJsonConverter(
-            supportedTypes: new[] {item.GetType(), typeof(MyClass1), typeof(MyClass2)},
+            **supportedTypes**: new[] {item.GetType(), typeof(MyClass1), typeof(MyClass2)},
             simpleTypes: ControlledSerializationJsonConverter.StandardSimpleTypes,
             converters: new Dictionary<Type, Func<object, string>>()
             {

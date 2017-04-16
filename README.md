@@ -1,4 +1,4 @@
-# ControlledSerializationJsonConverter
+# Controlled Serialization Json Converter
 Classic ASP framework JavaScriptConverter implementation with number of powerful parameters 
 
 ```

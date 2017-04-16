@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Script.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Globalization;
 
 namespace Vse.Web.Serialization.Test
 {
@@ -258,8 +258,6 @@ namespace Vse.Web.Serialization.Test
                     return supportedTypes;
                 }
             }
-
-
         }
     }
 }

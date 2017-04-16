@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+VisualStudioVersion = 15.0.26403.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlledSerializationJsonConverter", "ControlledSerializationJsonConverter\ControlledSerializationJsonConverter.csproj", "{522A515A-BC37-440F-92F8-BE689E3B48E7}"
 EndProject
@@ -9,27 +9,42 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlledSerializationJson
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7B08C5B2-7465-43F1-BABB-AE1410B8C1D1}"
 	ProjectSection(SolutionItems) = preProject
+		BuildNuget.ps1 = BuildNuget.ps1
 		LICENSE = LICENSE
 		OpenCover.ps1 = OpenCover.ps1
 		README.txt = README.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{D7E0CC79-2813-48A7-87FB-BCA6B554082E}"
+	ProjectSection(SolutionItems) = preProject
+		README.txt = README.txt
+		Vse.Web.Serialization.nuspec = Vse.Web.Serialization.nuspec
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Release-Net40|Any CPU = Release-Net40|Any CPU
+		Release-Net45|Any CPU = Release-Net45|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{522A515A-BC37-440F-92F8-BE689E3B48E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{522A515A-BC37-440F-92F8-BE689E3B48E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{522A515A-BC37-440F-92F8-BE689E3B48E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{522A515A-BC37-440F-92F8-BE689E3B48E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{522A515A-BC37-440F-92F8-BE689E3B48E7}.Release|Any CPU.ActiveCfg = Release-Net45|Any CPU
+		{522A515A-BC37-440F-92F8-BE689E3B48E7}.Release|Any CPU.Build.0 = Release-Net45|Any CPU
+		{522A515A-BC37-440F-92F8-BE689E3B48E7}.Release-Net40|Any CPU.ActiveCfg = Release-Net40|Any CPU
+		{522A515A-BC37-440F-92F8-BE689E3B48E7}.Release-Net40|Any CPU.Build.0 = Release-Net40|Any CPU
+		{522A515A-BC37-440F-92F8-BE689E3B48E7}.Release-Net45|Any CPU.ActiveCfg = Release-Net45|Any CPU
+		{522A515A-BC37-440F-92F8-BE689E3B48E7}.Release-Net45|Any CPU.Build.0 = Release-Net45|Any CPU
 		{D87D416D-7E82-4114-AC05-B79CFF976998}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D87D416D-7E82-4114-AC05-B79CFF976998}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D87D416D-7E82-4114-AC05-B79CFF976998}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D87D416D-7E82-4114-AC05-B79CFF976998}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D87D416D-7E82-4114-AC05-B79CFF976998}.Release-Net40|Any CPU.ActiveCfg = Debug|Any CPU
+		{D87D416D-7E82-4114-AC05-B79CFF976998}.Release-Net40|Any CPU.Build.0 = Debug|Any CPU
+		{D87D416D-7E82-4114-AC05-B79CFF976998}.Release-Net45|Any CPU.ActiveCfg = Release-Net45|Any CPU
+		{D87D416D-7E82-4114-AC05-B79CFF976998}.Release-Net45|Any CPU.Build.0 = Release-Net45|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

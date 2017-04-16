@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Vse.Web.Serialization.ControlledSerializationJsonConverter</id>
+    <version>0.0.0</version>
+    <authors>Roman Pokrovskij</authors>
+    <owners>Roman Pokrovskij</owners>
+    <licenseUrl>https://raw.githubusercontent.com/rpokrovskij/ControlledSerializationJsonConverter/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/rpokrovskij/ControlledSerializationJsonConverter</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Extends JavaScriptConverter to configure System.Web.Script.Serialization.JavaScriptSerializer for handling circular references</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>ControlledSerializationJsonConverter System.Web.Script.Serialization JavaScriptSerializer JavaScriptConverter Json Circular References</tags>
+    <dependencies></dependencies>
+  </metadata>
+  
+  <files>
+    <file src="ControlledSerializationJsonConverter\bin\Release-Net40\Vse.Web.Serialization.dll" target="lib\net40"/>
+    <file src="ControlledSerializationJsonConverter\bin\Release-Net45\Vse.Web.Serialization.pdb" target="lib\net40"/>
+    <file src="ControlledSerializationJsonConverter\bin\Release-Net45\Vse.Web.Serialization.dll" target="lib\net45"/>
+    <file src="ControlledSerializationJsonConverter\bin\Release-Net45\Vse.Web.Serialization.pdb" target="lib\net45"/>
+  </files>
+</package>

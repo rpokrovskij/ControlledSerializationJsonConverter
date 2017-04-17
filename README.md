@@ -1,5 +1,5 @@
 # Controlled Serialization Json Converter
-`ControlledSerializationJsonConverter` extentds `JavaScriptConverter` (from `System.Web.Extensions` assembly) with number of powerful parameters to avoid carshes by circular references during serialization and to improve json formatting. 
+`ControlledSerializationJsonConverter` extentds `JavaScriptConverter` (from assembly `System.Web.Extensions`) with number of powerful parameters to avoid carshes by circular references during serialization and to improve json formatting. 
 
 ## About JavaScriptSerializer  
 `JavaScriptSerializer` was a Micorsoft default json serialiaztion instrument for ASP platform till MVC6. Now it seems like most ASP users preffer `newtonsoft json.net` becasue of its reach serialization customization using attributes, when `JavaScriptSerializer` supports only `ScriptIgnoreAttribute`. I consider using attributes as a wrong practice, when DTO class generation is a best approach. Practice shows that DTO approach should be complemented with the flexible tool that can serialize "everithing" in case you need to do it rapidly without DTO. That what is `ControlledSerializationJsonConverter`. 

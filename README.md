@@ -2,7 +2,7 @@
 `ControlledSerializationJsonConverter` extentds `JavaScriptConverter` (from assembly `System.Web.Extensions`) with number of powerful parameters to avoid carshes by circular references during serialization and to improve json formatting. 
 
 ## About JavaScriptSerializer  
-`JavaScriptSerializer` was a Micorsoft default json serialiaztion instrument for ASP platform till MVC6. Now it seems like most ASP users preffer `newtonsoft json.net` becasue of its reach serialization customization possibilities using attributes, when `JavaScriptSerializer` supports only `ScriptIgnoreAttribute`. I consider using attributes there as a wrong practice, when DTO class generation is a correct approach. Practice shows that DTO approach should be complemented with the flexible tool that can serialize "everithing" in case you need to do it rapidly without DTO. That what is `ControlledSerializationJsonConverter`. 
+`JavaScriptSerializer` was a Microsoft default json serialization instrument for ASP platform till MVC6. Now it seems like most ASP users prefer `newtonsoft json.net` because of its reach serialization customization possibilities using attributes, when `JavaScriptSerializer` supports only `ScriptIgnoreAttribute`. I consider using attributes there as a wrong practice, when DTO class generation is a correct approach. Practice shows that DTO approach should be complemented with the flexible tool that can serialize "everything" in case you need to do it rapidly without DTO. That what is `ControlledSerializationJsonConverter`. 
 
 Simple configuration:
  ```
@@ -40,7 +40,7 @@ Those concepts and parameters to control the serialization process  used in Cont
 1) **recursionDepth** - number of steps in the object's graph after which serialization will be stoped (avoiding circular references and infinitive serialization process); default `recursionDepth` is 4;
 2) **simpleTypes** list - by default it is a list of CLR standard simple types (like `int`, `datetime`, etc) which will be serialized without going deep into theirs properties therefore "simple types" are leafs in serialized object's graph; you can add custom types to this list if you are OK with ToString() serialization; 
 3) **supportedTypes list and ignoreNotSupported flag** - in simplest configuration it should contain at least one item (serialized object's type), otherwise `ControlledSerializationJsonConverter` will be not hooked by `JavaScriptSerializer` process and not have a chance to start a work. This is the `JavaScriptSerializer` specific that can't be avoided. Once this converter was hooked, then it not return serialization to parent process except of serializing simple system types (leafs). If `ignoreNotSupported` setuped to `true` then all ***reference types*** you are interested in serialization should be in this list otherwice they will be ignored. In that case usually list of types will be constructed with `Assembly.GetTypes()` call; 
-4) **Ignore duplicates** - if this flag is setuped then reference types objects will tracked by reference, one and the same object will be serialized only once;
+4) **Ignore duplicates** - when this flag is setuped, then reference types objects will be tracked by theirs references and one and the same object will be serialized only once;
 5) **Formatters** - dictionary `Dictionary<Type, Func<object, string>>` that has a meaning of "for serialization of Type use the function `Func<object, string>`". 
 
 
@@ -107,7 +107,7 @@ For this case you need to create ASP.MVC JavaScriptSerializerFormatter and regis
                      {typeof(CultureInfo), (o) => ((CultureInfo)o).ToString()}
                 });
 
-                var jss = new JavaScriptSerializer(); // is no thread safe and should be reinstantioned
+                var jss = new JavaScriptSerializer(); // is no thread safe and should be recreated
                 jss.RegisterConverters(new[] { converter });
                 var json = jss.Serialize(value);
 
@@ -137,5 +137,6 @@ For this case you need to create ASP.MVC JavaScriptSerializerFormatter and regis
         }
     }
 ```
+
 
 

@@ -17,9 +17,11 @@ Simple configuration:
                     recursionDepth:     10,              // default 4
                     ignoreDuplicates:   true,            // default false
                     ignoreScriptIgnoreAttribute : false, // default true
+                    // serialize CultureInfo with to string
                     simpleTypes:        ControlledSerializationJsonConverter.StandardSimpleTypes.Union(new[] { typeof(CultureInfo) }),
+                    // custom date formatter
                     formatters:         new Dictionary<Type, Func<object, string>>(){
-                                               { typeof(DateTime), (o) => ((DateTime)(o)).ToLongDateString()}  // custom date formatter
+                                               { typeof(DateTime), (o) => ((DateTime)(o)).ToLongDateString()} 
                                         }
                     ); 
  ```
@@ -37,11 +39,9 @@ Note: `ControlledSerializationJsonConverter` as well as `JavaScriptSerializer` a
 Those concepts and parameters to controle the serialization are used
 1) **recursionDepth** - number of steps in the object's graph after which serialization will be stoped (avoiding circular references and infinitive serialization process); default `recursionDepth` is 4;
 2) **simpleTypes** list - by default it is a list of CLR standard simple types (like `int`, `datetime`, etc) which will be serialized without going deep into theirs properties therefore "simple types" as a leafs in serialized object's graph; you can add custom types to this list if you are OK with ToString() serialization; 
-3) **supportedTypes list and ignoreNotSupported flag** - in simplest configuration it should contain at least one item (serialized object's type), otherwise `ControlledSerializationJsonConverter` will be not hooked by `JavaScriptSerializer` process and not have a chance to start a work. Once `ControlledSerializationJsonConverter` was hooked it will not return serialization to parent process except serializng simple system types (leafs). If `ignoreNotSupported=true` then all reference types you are interested in serialization should be in this list. In that case list of types will be constructed with `Assembly.GetTypes()` call; 
-   If ***Ignore Not Supported Types flag*** is enabled then types only from this list will be sinchronized;
-4) **Ignore duplicates** - if this flag is setuped then reference type ojects will appear in json only once (objects are tracked by references);
+3) **supportedTypes list and ignoreNotSupported flag** - in simplest configuration it should contain at least one item (serialized object's type), otherwise `ControlledSerializationJsonConverter` will be not hooked by `JavaScriptSerializer` process and not have a chance to start a work. Once this converter was hooked it not return serialization to parent process except of serializing simple system types (leafs). If `ignoreNotSupported` setuped to `true` then all reference types you are interested in serialization should be in this list. In that case usually list of types will be constructed with `Assembly.GetTypes()` call; 
+4) **Ignore duplicates** - if this flag is setuped then reference types objects will tracked by reference, one and the same object will be serialized only once;
 5) **Formatters** - dictionary `Dictionary<Type, Func<object, string>>` that has a meaning of "for serialization of Type use the function `Func<object, string>`". 
- 
 
 
 ## USE CASE 1: Safe log object as json string

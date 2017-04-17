@@ -3,7 +3,7 @@
 }
 
 <script>
-    var param1 = 5;
+    var param1 = 6;
     function GetJsonMvc(url) {
         var jqxhr = $.getJSON(url, { "param1": param1 })
             .done(function (data) {
@@ -16,6 +16,7 @@
 
     function GetJsonWApi(url) {
         url += "/" + param1; 
+        //alert(url)
         var jqxhr = $.getJSON(url)
             .done(function (data) {
                 $("#text-monitor").val(JSON.stringify(data))

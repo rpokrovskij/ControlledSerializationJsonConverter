@@ -156,7 +156,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\BackofficeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Formatter.cs" />
+    <Compile Include="JavaScriptSerializerFormatter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

@@ -2,16 +2,7 @@
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using System;
 using System.Linq;
-using System.Collections.Generic;
-using System.Globalization;
-using Vse.Web.Serialization;
-using System.Net.Http.Formatting;
-using System.Threading.Tasks;
-using System.Web.Script.Serialization;
-using System.IO;
-using TestWebApp.Controllers.Models;
 
 namespace TestWebApp
 {
@@ -20,31 +11,14 @@ namespace TestWebApp
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
-            GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            GlobalConfiguration.Configure(WebApiConfig.Register); // IMPORTANT: GlobalConfiguration should go after FilterConfig (opposite to default order)
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            //var types = typeof(MvcApplication).Assembly.GetTypes()
-              //         .Where(t => t.IsClass && t.Namespace == "TestWebApp.Controllers.Models");
-
-            //var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-
-            
-            //serializer.RegisterConverters(new JavaScriptConverter[] { new DateTimeJavaScriptConverter() });
-
-
-            //GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.Converters.Add(
-            //    new ControlledSerializationJsonConverter(
-            //        supportedTypes: types,
-            //        recursionDepth: 10,
-            //        converters: new Dictionary<Type, Func<object, string>>() {
-            //             {typeof(CultureInfo), (o) => ((CultureInfo)o).ToString()}
-            //    }));
+            var types = typeof(MvcApplication).Assembly.GetTypes()
+                     .Where(t => t.IsClass && t.Namespace == "TestWebApp.Controllers.Models");
+            GlobalConfiguration.Configuration.Formatters.Insert(0, new JavaScriptSerializerFormatter(types));
         }
     }
-
-    
-
-    
 }

@@ -25,7 +25,7 @@ Simple configuration:
                                         }
                     ); 
  ```
- Call serialization
+Then serialization looks as:
  
 ```
 var jss = new JavaScriptSerializer();

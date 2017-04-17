@@ -11,14 +11,16 @@ Simple configuration:
  
  Comprehensive configuration:
  ```
- var supportedTypes = typeof(MyModlel).GetAssembly().GetTypes();
- var converter = new ControlledSerializationJsonConverter(
-                    supportedTypes:     supportedTypes,
+  var converter = new ControlledSerializationJsonConverter(
+                    supportedTypes:     typeof(MyModel).GetAssembly().GetTypes(), // all form models assembly
                     ignoreNotSupported: true,            // default false
                     recursionDepth:     10,              // default 4
                     ignoreDuplicates:   true,            // default false
                     ignoreScriptIgnoreAttribute : false, // default true
                     simpleTypes:        ControlledSerializationJsonConverter.StandardSimpleTypes.Union(new[] { typeof(CultureInfo) }),
+                    formatters:         new Dictionary<Type, Func<object, string>>(){
+                                               { typeof(DateTime), (o) => ((DateTime)(o)).ToLongDateString()}  // custom date formatter
+                                        }
                     ); 
  ```
  Call serialization

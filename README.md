@@ -2,7 +2,7 @@
 `ControlledSerializationJsonConverter` extentds `JavaScriptConverter` (from `System.Web.Extensions` assembly) with number of powerful parameters to avoid carshes by circular references during serialization and to improve json formatting. 
 
 ## About JavaScriptSerializer  
-`JavaScriptSerializer` was a Micorsoft default json serialiaztion instrument for ASP platform till MVC6. Now it seems like most ASP users preffer `newtonsoft json.net` becasue of its reach serialization customization using attributes, when `JavaScriptSerializer` supports only `ScriptIgnoreAttribute`. I consider using attributes as a wrong practice, when DTO class generation is a best approach. Practice shows that DTO approach should be complemented with the flexible tool that can "serialize everithing". That what is `ControlledSerializationJsonConverter`. 
+`JavaScriptSerializer` was a Micorsoft default json serialiaztion instrument for ASP platform till MVC6. Now it seems like most ASP users preffer `newtonsoft json.net` becasue of its reach serialization customization using attributes, when `JavaScriptSerializer` supports only `ScriptIgnoreAttribute`. I consider using attributes as a wrong practice, when DTO class generation is a best approach. Practice shows that DTO approach should be complemented with the flexible tool that can serialize "everithing" in case you need to do it rapidly without DTO. That what is `ControlledSerializationJsonConverter`. 
 
 Simple configuration:
  ```
@@ -11,15 +11,17 @@ Simple configuration:
  
  Comprehensive configuration:
  ```
+ var supportedTypes = typeof(MyModlel).GetAssembly().GetTypes();
  var converter = new ControlledSerializationJsonConverter(
-                    supportedTypes:     new[] { typeof(Class1), typeof(Class2), typeof(Class3) },
-                    recursionDepth:     10,
-                    ignoreDuplicates:   true
-                    ignoreNotSupported: true,
-                    simpleTypes:        ControlledSerializationJsonConverter.StandardSimpleTypes,
+                    supportedTypes:     supportedTypes,
+                    ignoreNotSupported: true,            // default false
+                    recursionDepth:     10,              // default 4
+                    ignoreDuplicates:   true,            // default false
+                    ignoreScriptIgnoreAttribute : false, // default true
+                    simpleTypes:        ControlledSerializationJsonConverter.StandardSimpleTypes.Union(new[] { typeof(CultureInfo) }),
                     ); 
  ```
- Serialization
+ Call serialization
  
 ```
 var jss = new JavaScriptSerializer();
@@ -30,11 +32,10 @@ var json2 = jss2.Serialize(item);
 Note: `ControlledSerializationJsonConverter` as well as `JavaScriptSerializer` are not thread safe.
  
 ## Control serialization with ControlledSerializationJsonConverter
-Those concepts and parameters are used
+Those concepts and parameters to controle the serialization are used
 1) **recursionDepth** - number of steps in the object's graph after which serialization will be stoped (avoiding circular references and infinitive serialization process); default `recursionDepth` is 4;
 2) **simpleTypes** list - by default it is a list of CLR standard simple types (like `int`, `datetime`, etc) which will be serialized without going deep into theirs properties therefore "simple types" as a leafs in serialized object's graph; you can add custom types to this list if you are OK with ToString() serialization; 
-3) **supportedTypes list and ignoreNotSupported flag** - the list of reference types you are interested in serialization (usually such list will be constructed with `Assembly.GetTypes()` call; 
-   Supported Types should contains at least one item (the serialized object's type), otherwise `ControlledSerializationJsonConverter` will be not hooked by JavaScriptSerializer and not used in serialization. Once `ControlledSerializationJsonConverter` was hooked it will return (instead of converters for system simple types).  
+3) **supportedTypes list and ignoreNotSupported flag** - in simplest configuration it should contain at least one item (serialized object's type), otherwise `ControlledSerializationJsonConverter` will be not hooked by `JavaScriptSerializer` process and not have a chance to start a work. Once `ControlledSerializationJsonConverter` was hooked it will not return serialization to parent process except serializng simple system types (leafs). If `ignoreNotSupported=true` then all reference types you are interested in serialization should be in this list. In that case list of types will be constructed with `Assembly.GetTypes()` call; 
    If ***Ignore Not Supported Types flag*** is enabled then types only from this list will be sinchronized;
 4) **Ignore duplicates** - if this flag is setuped then reference type ojects will appear in json only once (objects are tracked by references);
 5) **Formatters** - dictionary `Dictionary<Type, Func<object, string>>` that has a meaning of "for serialization of Type use the function `Func<object, string>`". 

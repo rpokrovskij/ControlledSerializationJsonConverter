@@ -12,7 +12,7 @@ Simple configuration:
  Comprehensive configuration:
  ```
   var converter = new ControlledSerializationJsonConverter(
-                    supportedTypes:     typeof(MyModel).GetAssembly().GetTypes(), // all form models assembly
+                    supportedTypes:     typeof(MyModel).Assembly.GetTypes(), // all form models assembly
                     ignoreNotSupported: true,            // default false
                     recursionDepth:     10,              // default 4
                     ignoreDuplicates:   true,            // default false

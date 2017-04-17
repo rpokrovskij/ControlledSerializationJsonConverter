@@ -24,7 +24,10 @@ Simple usage:
                     simpleTypes:        ControlledSerializationJsonConverter.StandardSimpleTypes,
                     ); 
  ```
- 
+
+## About JavaScriptSerializer  
+`JavaScriptSerializer` was a Micorsoft default json serialiaztion instrument for ASP platform till MVC6. It seems like now most ASP users preffer `newtonsoft json.net` becasue of its reach serialization customization using attributes, when JavaScriptSerializer supports only ScriptIgnoreAttribute, but as consider using attributes as wrong practice. By default even this attribute interpetation is disabled in the `ControlledSerializationJsonConverter`. To enable it setup `ignoreScriptIgnoreAttribute=false` in constructor.
+
 ## USE CASE 1: Safe log object as json string
 ```
 var item =  ... ;  // object you want to log
@@ -51,6 +54,3 @@ if (item!=null) {
 ```
 
 
-LIMITATIONS.
-
-ScriptIgnoreAttribute - the only one attribute that is supported by JavaScriptSerializer will be ignored

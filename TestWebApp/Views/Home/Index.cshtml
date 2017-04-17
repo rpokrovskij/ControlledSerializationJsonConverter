@@ -1,0 +1,57 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<script>
+    var param1 = 5;
+    function GetJsonMvc(url) {
+        var jqxhr = $.getJSON(url, { "param1": param1 })
+            .done(function (data) {
+                $("#text-monitor").val(JSON.stringify(data))
+            })
+            .fail(function (jqXHR, textStatus, errorThrown){
+                $("#text-monitor").val(textStatus + ' ' + errorThrown.message + ' ' + jqXHR.responseText )
+            });
+    } 
+
+    function GetJsonWApi(url) {
+        url += "/" + param1; 
+        var jqxhr = $.getJSON(url)
+            .done(function (data) {
+                $("#text-monitor").val(JSON.stringify(data))
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                $("#text-monitor").val(textStatus + ' ' + errorThrown.message + ' ' + jqXHR.responseText)
+            });
+    } 
+
+    $(document).ready(function () {
+        //$.ajaxSetup({ cache: false });
+
+        $("#mvcBtn1").click(function () {
+            GetJsonMvc('Home/GetItem1');
+        });
+
+        $("#mvcBtn2").click(function () {
+            GetJsonMvc('Home/GetItem2');
+        });
+
+        $("#wapiBtn").click(function () {
+            GetJsonWApi('api/Test1');
+        });
+    });
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <div>
+            <button class="btn btn-default" id="mvcBtn1">MVC 1</button>
+            <button class="btn btn-default" id="mvcBtn2">MVC 2</button>
+            <button class="btn btn-default" id="wapiBtn">WAPI</button>
+            <button class="btn btn-default" id="clearBtn" onclick='$("#text-monitor").val("")'>Clear</button>
+        </div>
+        <div style="margin-top:1em;">
+            <textarea id="text-monitor" class="form-control" readonly="readonly" rows="30" style="width:100%; max-width: none;"></textarea>
+        </div>        
+    </div>
+</div>

@@ -44,7 +44,7 @@ Those concepts and parameters to control the serialization process  used in Cont
 5) **Formatters** - dictionary `Dictionary<Type, Func<object, string>>` that has a meaning of "for serialization of Type use the function `Func<object, string>`". 
 
 
-## USE CASE 1: Safe log object as json string
+## USE CASE 1: do the safe log of an object as json string
 ```
 var item =  ... ;  // object you want to log
 if (item!=null) {
@@ -58,15 +58,84 @@ if (item!=null) {
 }
 ```
 
-## USE CASE 2: MVC5 Controller throws Circular Reference exception 
+## USE CASE 2: to avoid Circular Reference exception in MVC5 Controller
+```
+public ActionResult GetItem2(int param1)
+{
+            var item = ...;
+            // return Json(item, JsonRequestBehavior.AllowGet);
+            
+            var jss = new JavaScriptSerializer();
+            jss.RegisterConverters(new[] { new ControlledSerializationJsonConverter(new[] {item.GetType()}) });
+            var json = jss.Serialize(item);
+            return this.Content(json, "application/json");
+}
+
 ```
 
+## USE CASE 3: to avoid Circular Reference exception in MVC5 Web Api Controller
+For this case you need to create ASP.MVC JavaScriptSerializerFormatter and register it in the Global.asax.cs
 
 ```
+   public class JavaScriptSerializerFormatter : MediaTypeFormatter
+    {
+        IEnumerable<Type> types;
+        public JavaScriptSerializerFormatter(IEnumerable<Type> types)
+        {
+            SupportedMediaTypes.Add(new System.Net.Http.Headers.MediaTypeHeaderValue("application/json"));
+            this.types = types;
+        }
 
-## USE CASE 3: MVC5 WebAPI Controller throws Circular Reference exception 
-```
+        public override bool CanWriteType(Type type)
+        {
+            return types.Contains(type);
+        }
 
+        public override bool CanReadType(Type type)
+        {
+            return false;
+        }
+
+        public override Task WriteToStreamAsync(Type type, object value, Stream stream, HttpContent content, TransportContext transportContext)
+        {
+            var task = Task.Factory.StartNew(() =>
+            {
+                var converter = new ControlledSerializationJsonConverter(
+                supportedTypes: types,
+                recursionDepth: 10,
+                converters: new Dictionary<Type, Func<object, string>>() {
+                     {typeof(CultureInfo), (o) => ((CultureInfo)o).ToString()}
+                });
+
+                var jss = new JavaScriptSerializer(); // is no thread safe and should be reinstantioned
+                jss.RegisterConverters(new[] { converter });
+                var json = jss.Serialize(value);
+
+                byte[] buf = System.Text.Encoding.Default.GetBytes(json);
+                stream.Write(buf, 0, buf.Length);
+                stream.Flush();
+            });
+
+            return task;
+        }
+    }
+    
+    // .............
+    public class MvcApplication : System.Web.HttpApplication
+    {
+        protected void Application_Start()
+        {
+            AreaRegistration.RegisterAllAreas();
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            GlobalConfiguration.Configure(WebApiConfig.Register); // IMPORTANT: GlobalConfiguration should go after FilterConfig (opposite to default order)
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            var types = typeof(MvcApplication).Assembly.GetTypes()
+                     .Where(t => t.IsClass && t.Namespace == "TestWebApp.Controllers.Models");
+            GlobalConfiguration.Configuration.Formatters.Insert(0, new JavaScriptSerializerFormatter(types));
+        }
+    }
 ```
 
 

@@ -19,11 +19,11 @@ Simple configuration:
                     ignoreDuplicates:   true,            // default false
                     ignoreScriptIgnoreAttribute : false, // default true
                     // serialize CultureInfo with to string
-                    simpleTypes:        ControlledSerializationJsonConverter.StandardSimpleTypes.Union(new[] { typeof(CultureInfo) }),
+                    supremeTypes:        ControlledSerializationJsonConverter.StandardSimpleTypes.Union(new[] { typeof(CultureInfo) }),
                     // custom date formatter  and CultureInfo Formatter
                     formatters:         new Dictionary<Type, Func<object, string>>(){
                                                { typeof(DateTime), (o) => ((DateTime)(o)).ToLongDateString()},
-                                               { typeof(CultureInfo), ControlledSerializationJsonConverter.ToStringFormatter}
+                                               { typeof(CultureInfo), null} // for null - toString() will be used
                                         }
                     ); 
  ```
@@ -43,7 +43,7 @@ Those concepts and parameters to control the serialization process  used in Cont
 2) **supremeTypes list** - by default it is a list of CLR standard simple types (like `int`, `datetime`, etc) which will be serialized without going deep into theirs properties therefore "supreme types" are leafs in serialized object's graph;  you can add custom types to this list (referenced as well) using singnificant side effect: to process supreme type serializing process exit ControlledSerializationJsonConverter code and returns to `JavaScriptSerializer` code with all consiquences, which you should understand very good, therefore `supremeTypes` accessible only in protected constructor; 
 3) **supportedTypes list and ignoreNotSupported flag** - in simplest configuration it should contain at least one item (type of the object you are going to serialize), otherwise `ControlledSerializationJsonConverter` will be not hooked by `JavaScriptSerializer` process and will not get a chance to start a work. This is the `JavaScriptSerializer` specific that can't be avoided. Once  converter was hooked, it not return serialization to parent process till of serializing *suprem types* (leafs). If `ignoreNotSupported` setuped to `true` then all *not supreme types* you are interested in serialization should be in this list otherwice they will be ignored. In that case  list of types usually will be constructed with `Assembly.GetTypes()` call; 
 4) **Ignore duplicates** - when this flag is setuped, then reference types objects will be tracked by theirs references and one and the same object will be serialized only once;
-5) **Formatters** - `Dictionary<Type, Func<object, string>>` that has a meaning of "for serialization that type use the function `Func<object, string>`". 
+5) **Formatters** - `Dictionary<Type, Func<object, string>>` that has a meaning of "for serialization that type use the function `Func<object, string>`". Func<object, string> can be null, then .ToString() will be used;
 6) **ignoreScriptIgnoreAttribute** - default value is `false` that means all *ScriptIgnoreAttribute* attributes will be ignotred; with `ControlledSerializationJsonConverter` there are no sense to use *ScriptIgnoreAttribute* widely. 
 
 ## USE CASE 1: do the safe log of an object as json string

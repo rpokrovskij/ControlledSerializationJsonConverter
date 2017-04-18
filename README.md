@@ -1,8 +1,6 @@
 # Controlled Serialization Json Converter
 [![NuGet](https://img.shields.io/nuget/v/Nuget.Core.svg)](https://www.nuget.org/packages/Vse.Web.Serialization.ControlledSerializationJsonConverter/)
 
-NUGET PACKAGE: 
-
 `ControlledSerializationJsonConverter` extentds `JavaScriptConverter` (customizable part of Microsoft `JavaScriptSerializer`, namespace `System.Web.Script.Serialization`, assembly `System.Web.Extensions`) with number of powerful parameters to avoid crashes by walking through circular references, to limit serialization to certain types or unique objects and to easy configure json formatting. 
 
 ## About JavaScriptSerializer  

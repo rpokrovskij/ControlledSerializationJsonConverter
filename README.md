@@ -1,8 +1,8 @@
 # Controlled Serialization Json Converter
-`ControlledSerializationJsonConverter` extentds `JavaScriptConverter` (from assembly `System.Web.Extensions`) with number of powerful parameters to avoid carshes by circular references during serialization and to improve json formatting. 
+`ControlledSerializationJsonConverter` extentds `JavaScriptConverter` (customizable part of `JavaScriptSerializer`, namespace `System.Web.Script.Serialization`, assembly `System.Web.Extensions`) with number of powerful parameters to avoid carshes by circular references and to improve json formatting. 
 
 ## About JavaScriptSerializer  
-`JavaScriptSerializer` was a Microsoft default json serialization instrument for ASP platform till MVC6. Now it seems like most ASP users prefer `newtonsoft json.net` because of its reach serialization customization possibilities using attributes, when `JavaScriptSerializer` supports only `ScriptIgnoreAttribute`. I consider using attributes there as a wrong practice, when DTO class generation is a correct approach. Practice shows that DTO approach should be complemented with the flexible tool that can serialize "everything" in case you need to do it rapidly without DTO. That what is `ControlledSerializationJsonConverter`. 
+`JavaScriptSerializer` was a Microsoft default json serialization tool for ASP platform till MVC6 (released at 12 August 2016). It seems like most ASP users prefer `newtonsoft json.net` because of its reach serialization customization possibilities using attributes, when `JavaScriptSerializer` supports only `ScriptIgnoreAttribute`. I consider using attributes there as a controversional practice, when DTO class generation is a correct approach. Practice shows that DTO approach should be complemented with the flexible tool that can serialize "everything" in case you need to do it rapidly without creating DTO. That what is `ControlledSerializationJsonConverter`. 
 
 Simple configuration:
  ```
@@ -19,9 +19,10 @@ Simple configuration:
                     ignoreScriptIgnoreAttribute : false, // default true
                     // serialize CultureInfo with to string
                     simpleTypes:        ControlledSerializationJsonConverter.StandardSimpleTypes.Union(new[] { typeof(CultureInfo) }),
-                    // custom date formatter
+                    // custom date formatter  and CultureInfo Formatter
                     formatters:         new Dictionary<Type, Func<object, string>>(){
-                                               { typeof(DateTime), (o) => ((DateTime)(o)).ToLongDateString()} 
+                                               { typeof(DateTime), (o) => ((DateTime)(o)).ToLongDateString()},
+                                               { typeof(CultureInfo), ControlledSerializationJsonConverter.ToStringFormatter}
                                         }
                     ); 
  ```
@@ -29,8 +30,8 @@ Then serialization looks as:
  
 ```
 var jss = new JavaScriptSerializer();
-jss2.RegisterConverters(new[] { converter });
-var json2 = jss2.Serialize(item);
+jss.RegisterConverters(new[] { converter });
+var json = jss2.Serialize(item);
 ``` 
 
 Note: `ControlledSerializationJsonConverter` as well as `JavaScriptSerializer` are not thread safe.

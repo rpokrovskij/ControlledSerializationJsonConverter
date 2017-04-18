@@ -4,6 +4,7 @@
 ## About JavaScriptSerializer  
 `JavaScriptSerializer` was a Microsoft default json serialization tool for ASP platform till MVC5. MVC6 released at 12 August 2016 use `newtonsoft json.net` as default serialization tool. It seems like most ASP users prefer `newtonsoft json.net` because of its reach serialization customization possibilities using attributes, when `JavaScriptSerializer` supports only `ScriptIgnoreAttribute`. I consider using attributes there as a controversional practice, when DTO class generation is a correct approach. Practice shows that DTO approach should be complemented with the flexible tool that can serialize "everything" in case you need to do it rapidly without creating DTO. That what is `ControlledSerializationJsonConverter`. 
 
+## Usage
 Simple configuration:
  ```
  var converter = new ControlledSerializationJsonConverter(new[] { item.GetType() }); 

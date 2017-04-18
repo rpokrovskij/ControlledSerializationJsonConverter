@@ -141,4 +141,4 @@ For this case you need to create ASP.MVC JavaScriptSerializerFormatter and regis
 ```
 
 
-
+[![Coverage Status](https://coveralls.io/repos/github/rpokrovskij/ControlledSerializationJsonConverter/badge.svg?branch=)](https://coveralls.io/github/rpokrovskij/ControlledSerializationJsonConverter?branch=)

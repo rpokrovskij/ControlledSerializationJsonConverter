@@ -1,8 +1,15 @@
 ﻿using System;
 using System.Globalization;
+using System.Web.Script.Serialization;
 
 namespace Vse.Web.Serialization.Test
 {
+    public class ComplexModel
+    {
+        public SampleModel SampleModel  { get;set;}
+        public DateTime DateTime { get; set; } 
+    }
+
     public class SampleModel
     {
         public static SampleModel CreateSampleWithCircularReference()
@@ -22,6 +29,7 @@ namespace Vse.Web.Serialization.Test
             return item1;
         }
         public int Number { get; set; }
+        [ScriptIgnore]
         public string Name { get; set; }
         public SampleModel Child { get; set; }
         public CultureInfo CultureInfo { get; set; }

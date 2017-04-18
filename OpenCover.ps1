@@ -28,7 +28,7 @@ $testsResultsFolder = 'TestResults'
 $excludeGlobbingFromFolders =  @('.git', '.vs', 'docs', $toolsFolder, $testsResultsFolder)
 
 #left it empty if you are not using coveralls (publish report online, integrate it with GitHub. more https://coveralls.io/)
-$env:COVERALLS_REPO_TOKEN = "" 
+$env:COVERALLS_REPO_TOKEN = "UWPTQjNsEFo5GtXbohOdqL4bMt5nIyxUd" 
 
 # STEP 1. Get Solution Folder
 $SolutionFolderPath = $PSScriptRoot #or enter it manually there 

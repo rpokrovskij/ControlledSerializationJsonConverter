@@ -7,16 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlledSerializationJson
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlledSerializationJsonConverter.Test", "ControlledSerializationJsonConverter.Test\ControlledSerializationJsonConverter.Test.csproj", "{D87D416D-7E82-4114-AC05-B79CFF976998}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7B08C5B2-7465-43F1-BABB-AE1410B8C1D1}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{D7E0CC79-2813-48A7-87FB-BCA6B554082E}"
 	ProjectSection(SolutionItems) = preProject
 		BuildNuget.ps1 = BuildNuget.ps1
 		LICENSE = LICENSE
 		OpenCover.ps1 = OpenCover.ps1
-		README.txt = README.txt
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{D7E0CC79-2813-48A7-87FB-BCA6B554082E}"
-	ProjectSection(SolutionItems) = preProject
 		README.txt = README.txt
 		Vse.Web.Serialization.nuspec = Vse.Web.Serialization.nuspec
 	EndProjectSection

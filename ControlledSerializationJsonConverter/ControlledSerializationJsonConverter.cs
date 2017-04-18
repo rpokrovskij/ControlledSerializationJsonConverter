@@ -54,28 +54,43 @@ namespace Vse.Web.Serialization
         private readonly int recursionDepth = 1;
         private readonly bool ignoreDuplicates;
         private readonly bool ignoreNotSupported;
+        private readonly bool ignoreScriptIgnoreAttribute;
         private readonly IEnumerable<Type> supportedTypes;
-        private readonly IEnumerable<Type> simpleTypes;
-        private readonly Dictionary<Type, Func<object, string>> converters;
+        private readonly IEnumerable<Type> supremeTypes;
+        private readonly Dictionary<Type, Func<object, string>> formatters;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="supportedTypes">Referenced types, types that can be parsed into</param>
         /// <param name="simpleTypes">Value types that are not tracked in history (for duplicates). Serialized with ToString()</param>
-        /// <param name="converters">Some referenced types on complex types can be configured as simple with custome serializers</param>
+        /// <param name="formatters">Some referenced types on complex types can be configured as simple with custome serializers</param>
         /// <param name="recursionDepth">Control recursion</param>
         /// <param name="ignoreDuplicates"></param>
         /// <param name="ignoreNotSupported"></param>
         public ControlledSerializationJsonConverter(
             IEnumerable<Type> supportedTypes,
-            int recursionDepth = 1,
+            int recursionDepth = 4,
             bool ignoreDuplicates = false,
             bool ignoreNotSupported = false,
-            IEnumerable<Type> simpleTypes = null,
-            Dictionary<Type, Func<object, string>> converters = null
+            Dictionary<Type, Func<object, string>> formatters = null,
+            bool ignoreScriptIgnoreAttribute = true
             ) :
-            this(supportedTypes, recursionDepth, ignoreDuplicates, ignoreNotSupported, simpleTypes, converters, 1, new List<object>(), null)
+            this(supportedTypes, recursionDepth, ignoreDuplicates, ignoreNotSupported, formatters, ignoreScriptIgnoreAttribute, null)
+        {
+
+        }
+
+        protected ControlledSerializationJsonConverter(
+            IEnumerable<Type> supportedTypes,
+            int recursionDepth = 4,
+            bool ignoreDuplicates = false,
+            bool ignoreNotSupported = false,
+            Dictionary<Type, Func<object, string>> formatters = null,
+            bool ignoreScriptIgnoreAttribute = true,
+            IEnumerable<Type> supremeTypes = null
+            ) :
+            this(supportedTypes, recursionDepth, ignoreDuplicates, ignoreNotSupported, formatters, ignoreScriptIgnoreAttribute, supremeTypes,   1, new List<object>(), null)
         {
 
         }
@@ -85,18 +100,22 @@ namespace Vse.Web.Serialization
             int recursionDepth,
             bool ignoreDuplicates,
             bool ignoreNotSupported,
-            IEnumerable<Type> simpleTypes,
-            Dictionary<Type, Func<object, string>> converters,
-            int currentRecursionDepth, List<object> history, ControlledSerializationJsonConverter parent)
+            Dictionary<Type, Func<object, string>> formatters,
+            bool ignoreScriptIgnoreAttribute,
+            IEnumerable<Type> supremeTypes,
+            int currentRecursionDepth, 
+            List<object> history, 
+            ControlledSerializationJsonConverter parent)
         {
             if (supportedTypes == null || supportedTypes.Count() == 0)
                 throw new ArgumentException("SupportedTypes can't be null or empty", nameof(supportedTypes));
             this.recursionDepth     = recursionDepth;
             this.ignoreDuplicates   = ignoreDuplicates;
             this.ignoreNotSupported = ignoreNotSupported;
+            this.ignoreScriptIgnoreAttribute = ignoreScriptIgnoreAttribute;
             this.supportedTypes     = supportedTypes;
-            this.converters         = converters;
-            this.simpleTypes        = simpleTypes ?? StandardSimpleTypes;
+            this.formatters         = formatters;
+            this.supremeTypes        = supremeTypes ?? StandardSimpleTypes;
             this.currentRecursionDepth = currentRecursionDepth;
             this.history = history;
             this.parent = parent;
@@ -113,48 +132,50 @@ namespace Vse.Web.Serialization
             {
                 if (propertyInfo.CanRead && propertyInfo.GetIndexParameters().Length == 0)
                 {
-                    if (simpleTypes.Contains(propertyInfo.PropertyType))
+                    if (ignoreScriptIgnoreAttribute || (!ignoreScriptIgnoreAttribute && !Attribute.IsDefined(propertyInfo, typeof(ScriptIgnoreAttribute))))
                     {
-                        string propertyName = propertyInfo.Name;
-                        var value = propertyInfo.GetValue(o, null);
-                        standardTypesValues.Add(propertyName, value);
-                    }
-                    else if (converters != null && converters.TryGetValue(propertyInfo.PropertyType, out Func<object, string> func))
-                    {
-                        string propertyName = propertyInfo.Name;
-                        var value = propertyInfo.GetValue(o, null);
-                        var stringValue = (value == null) ? null : func(value);
-                        standardTypesValues.Add(propertyName, stringValue);
-                    }
-                    else
-                    {
-
-                        if (currentRecursionDepth <= recursionDepth)
+                        if (formatters != null && formatters.TryGetValue(propertyInfo.PropertyType, out Func<object, string> func))
                         {
                             string propertyName = propertyInfo.Name;
                             var value = propertyInfo.GetValue(o, null);
-                            if (value != null)
+                            var stringValue = (value == null) ? null : (func == null ? value.ToString():func(value));
+                            standardTypesValues.Add(propertyName, stringValue);
+                        }
+                        else if (supremeTypes.Contains(propertyInfo.PropertyType))
+                        {
+                            string propertyName = propertyInfo.Name;
+                            var value = propertyInfo.GetValue(o, null);
+                            standardTypesValues.Add(propertyName, value);
+                        }
+                        else
+                        {
+                            if (currentRecursionDepth <= recursionDepth)
                             {
-                                if (ignoreNotSupported)
+                                string propertyName = propertyInfo.Name;
+                                var value = propertyInfo.GetValue(o, null);
+                                if (value != null)
                                 {
-                                    if (supportedTypes.Contains(value.GetType()))
+                                    if (ignoreNotSupported)
+                                    {
+                                        if (supportedTypes.Contains(value.GetType()))
+                                        {
+                                            var dictionaryProperties = LayerUp(propertyName, value);
+                                            standardTypesValues.Add(propertyName, dictionaryProperties);
+                                        }
+                                    }
+                                    else if (ignoreDuplicates)
+                                    {
+                                        if (!history.Contains(value))
+                                        {
+                                            var dictionaryProperties = LayerUp(propertyName, value);
+                                            standardTypesValues.Add(propertyName, dictionaryProperties);
+                                        }
+                                    }
+                                    else
                                     {
                                         var dictionaryProperties = LayerUp(propertyName, value);
                                         standardTypesValues.Add(propertyName, dictionaryProperties);
                                     }
-                                }
-                                else if (ignoreDuplicates)
-                                {
-                                    if (!history.Contains(value))
-                                    {
-                                        var dictionaryProperties = LayerUp(propertyName, value);
-                                        standardTypesValues.Add(propertyName, dictionaryProperties);
-                                    }
-                                }
-                                else
-                                {
-                                    var dictionaryProperties = LayerUp(propertyName, value);
-                                    standardTypesValues.Add(propertyName, dictionaryProperties);
                                 }
                             }
                         }
@@ -166,8 +187,8 @@ namespace Vse.Web.Serialization
 
         private IDictionary<string, object> LayerUp(string propertyName, object value)
         {
-            var js = new ControlledSerializationJsonConverter(supportedTypes, recursionDepth - currentRecursionDepth, ignoreDuplicates, ignoreNotSupported, simpleTypes, 
-                converters, currentRecursionDepth, history, this);
+            var js = new ControlledSerializationJsonConverter(supportedTypes, recursionDepth - currentRecursionDepth, ignoreDuplicates, ignoreNotSupported, formatters, ignoreScriptIgnoreAttribute, supremeTypes, 
+                currentRecursionDepth, history, this);
             var jss = new JavaScriptSerializer();
             var dictionary = js.Serialize(value, jss);
             return dictionary;

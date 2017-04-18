@@ -42,7 +42,7 @@ namespace TestWebApp
                      {typeof(CultureInfo), (o) => ((CultureInfo)o).ToString()}
                 });
 
-                var jss = new JavaScriptSerializer(); // is no thread safe and should be reinstantioned
+                var jss = new JavaScriptSerializer(); // is no thread safe and should be recreated
                 jss.RegisterConverters(new[] { converter });
                 var json = jss.Serialize(value);
 

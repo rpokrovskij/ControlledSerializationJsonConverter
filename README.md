@@ -1,5 +1,6 @@
 # Controlled Serialization Json Converter
 [![NuGet](https://img.shields.io/badge/nuget-v1.0.1-blue.svg)](https://www.nuget.org/packages/Vse.Web.Serialization.ControlledSerializationJsonConverter)
+[![Coverage Status](https://s3.amazonaws.com/assets.coveralls.io/badges/coveralls_100.svg)](https://coveralls.io/github/rpokrovskij/ControlledSerializationJsonConverter?branch=)
 
 `ControlledSerializationJsonConverter` extentds `JavaScriptConverter` (customizable part of Microsoft `JavaScriptSerializer`, namespace `System.Web.Script.Serialization`, assembly `System.Web.Extensions`) with number of powerful parameters to avoid crashes by walking through circular references, to limit serialization to certain types or unique objects and to easy configure json formatting. 
 
@@ -143,4 +144,4 @@ For this case you need to create ASP.MVC JavaScriptSerializerFormatter and regis
 ```
 
 
-[![Coverage Status](https://s3.amazonaws.com/assets.coveralls.io/badges/coveralls_100.svg)](https://coveralls.io/github/rpokrovskij/ControlledSerializationJsonConverter?branch=)
+

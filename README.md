@@ -35,7 +35,7 @@ Then serialization looks as:
 ```
 var jss = new JavaScriptSerializer();
 jss.RegisterConverters(new[] { converter });
-var json = jss2.Serialize(item);
+var json = jss.Serialize(item);
 ``` 
 
 Note: `ControlledSerializationJsonConverter` as well as `JavaScriptSerializer` are not thread safe.

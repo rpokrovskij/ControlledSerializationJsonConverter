@@ -143,9 +143,9 @@ For this case you need to create ASP.MVC JavaScriptSerializerFormatter and regis
     }
 ```
 
-## Performance with BenchmarkDotNet 
+## Performance 
 
-Here `ControlledSerializationJsonConverter` (as ***JavaScriptSerializerCustom***) compared with row `JavaScriptSerializer`, `NewtonsoftJson`,`ServiceStack` and `DataContractJsonSerializer`
+Here `ControlledSerializationJsonConverter` (as ***JavaScriptSerializerCustom***) compared with row `JavaScriptSerializer`, `NewtonsoftJson`,`ServiceStack` and `DataContractJsonSerializer` using BenchmarkDotNet
 
 ``` ini
 

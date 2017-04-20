@@ -143,5 +143,24 @@ For this case you need to create ASP.MVC JavaScriptSerializerFormatter and regis
     }
 ```
 
+## Performance with BenchmarkDotNet 
 
+``` ini
+
+BenchmarkDotNet=v0.10.3.0, OS=Microsoft Windows NT 6.2.9200.0
+Processor=Intel(R) Core(TM) i5-2500K CPU 3.30GHz, ProcessorCount=4
+Frequency=3233536 Hz, Resolution=309.2590 ns, Timer=TSC
+  [Host] : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.6.1637.0DEBUG
+  Clr    : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.6.1637.0
+
+Job=Clr  Runtime=Clr  
+
+```
+ |                     Method |          Mean |     StdDev |           Min |           Max |        Median | Rank |   Gen 0 | Allocated |
+ |--------------------------- |-------------- |----------- |-------------- |-------------- |-------------- |----- |-------- |---------- |
+ | JavaScriptSerializerCustom |   718.7816 us | 27.3497 us |   673.8058 us |   773.9248 us |   713.4613 us |    4 | 33.9844 | 172.03 kB |
+ |       JavaScriptSerializer | 1,921.3099 us | 70.0188 us | 1,787.0424 us | 2,048.8881 us | 1,916.0952 us |    5 | 31.2500 | 269.75 kB |
+ |             NewtonsoftJson |   165.3395 us |  7.5443 us |   151.8159 us |   178.4685 us |   165.5090 us |    1 | 14.4857 |  60.75 kB |
+ | DataContractJsonSerializer |   405.2414 us | 17.1242 us |   372.1024 us |   426.4256 us |   402.6731 us |    3 | 13.8021 |  76.56 kB |
+ |       ServiceStackToString |   211.5505 us |  5.5206 us |   201.5641 us |   220.4368 us |   210.9183 us |    2 |  1.7233 |  31.77 kB |
 

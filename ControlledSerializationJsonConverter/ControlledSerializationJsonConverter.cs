@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Script.Serialization;
@@ -13,20 +14,27 @@ namespace Vse.Web.Serialization
 
         #region StandardSimpleTypes
         public static readonly IEnumerable<Type> StandardSimpleTypes = new[] {
+                typeof(string),
                 typeof(bool),
+                typeof(int),
+                typeof(DateTime),
                 typeof(bool?),
-                typeof(byte),
-                typeof(byte?),
-                typeof(char),
-                typeof(char?),
+                typeof(int?),
+                typeof(DateTime?),
+                typeof(Guid),
+                typeof(Guid?),
+                typeof(TimeSpan),
+                typeof(TimeSpan?),
                 typeof(decimal),
                 typeof(decimal?),
                 typeof(double),
                 typeof(double?),
                 typeof(float),
                 typeof(float?),
-                typeof(int),
-                typeof(int?),
+                typeof(byte),
+                typeof(byte?),
+                typeof(char),
+                typeof(char?),
                 typeof(long),
                 typeof(long?),
                 typeof(sbyte),
@@ -39,15 +47,8 @@ namespace Vse.Web.Serialization
                 typeof(ulong?),
                 typeof(ushort),
                 typeof(ushort?),
-                typeof(string),
-                typeof(DateTime),
-                typeof(DateTime?),
                 typeof(DateTimeOffset),
                 typeof(DateTimeOffset?),
-                typeof(Guid),
-                typeof(Guid?),
-                typeof(TimeSpan),
-                typeof(TimeSpan?)
             };
         #endregion
 
@@ -94,7 +95,46 @@ namespace Vse.Web.Serialization
         {
 
         }
-
+        private static IEnumerable<Type> ExtractTypes(IEnumerable<Type> source)
+        {
+            var destination = new List<Type>();
+            foreach(var t in source)
+            {
+                if (t.IsArray)
+                {
+                    var x = t.GetElementType();
+                    destination.Add(x);
+                }
+                else 
+                {
+                    var interfaces = t.GetInterfaces();
+                    if (interfaces.Length > 0 && interfaces.Contains(typeof(IEnumerable)))
+                    {
+                        if (interfaces.Contains(typeof(IList)))
+                        {
+                            var x = t.GetProperty("Item").PropertyType;
+                            destination.Add(x);
+                        }
+                        else if (interfaces.Any(t2 =>
+                                    t2.IsGenericType &&
+                                    t2.GetGenericTypeDefinition() == typeof(ISet<>)))
+                        {
+                            var x = t.GetGenericArguments()[0];
+                            destination.Add(x);
+                        }
+                        else
+                        {
+                            destination.Add(t);
+                        }
+                    }
+                    else
+                    {
+                        destination.Add(t);
+                    }
+                }
+            }
+            return destination;
+        }
         private ControlledSerializationJsonConverter(
             IEnumerable<Type> supportedTypes,
             int recursionDepth,
@@ -113,7 +153,7 @@ namespace Vse.Web.Serialization
             this.ignoreDuplicates   = ignoreDuplicates;
             this.ignoreNotSupported = ignoreNotSupported;
             this.ignoreScriptIgnoreAttribute = ignoreScriptIgnoreAttribute;
-            this.supportedTypes     = supportedTypes;
+            this.supportedTypes     = ExtractTypes(supportedTypes);
             this.formatters         = formatters;
             this.supremeTypes        = supremeTypes ?? StandardSimpleTypes;
             this.currentRecursionDepth = currentRecursionDepth;
@@ -123,9 +163,9 @@ namespace Vse.Web.Serialization
 
         public override IDictionary<string, object> Serialize(object o, JavaScriptSerializer serializer)
         {
-            history.Add(o);
             var type = o.GetType();
             var standardTypesValues = new Dictionary<string, object>();
+            history.Add(o);
             var properties = type.GetProperties();
 
             foreach (var propertyInfo in properties)

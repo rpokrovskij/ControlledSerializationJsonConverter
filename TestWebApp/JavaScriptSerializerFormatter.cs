@@ -38,7 +38,7 @@ namespace TestWebApp
                 var converter = new ControlledSerializationJsonConverter(
                 supportedTypes: types,
                 recursionDepth: 10,
-                converters: new Dictionary<Type, Func<object, string>>() {
+                formatters: new Dictionary<Type, Func<object, string>>() {
                      {typeof(CultureInfo), (o) => ((CultureInfo)o).ToString()}
                 });
 

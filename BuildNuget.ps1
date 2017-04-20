@@ -17,8 +17,8 @@ $Version = Get-Content "$SolutionFolderPath\$assemblyInfoLocation" | Select-Stri
        Foreach-Object {$_.Groups[1].Value} | select-object
 
 # it is possible to configure /p:TargetFrameworkVersion="v%1"
-# & $msbuildPath "Vse.Web.Serialization.sln" /p:Configuration="Release-Net40" /t:"ControlledSerializationJsonConverter:Clean","ControlledSerializationJsonConverter:Rebuild" /v:m /nologo
-# & $msbuildPath "Vse.Web.Serialization.sln" /p:Configuration="Release-Net45" /t:"ControlledSerializationJsonConverter:Clean","ControlledSerializationJsonConverter:Rebuild" /v:m /nologo
+& $msbuildPath "Vse.Web.Serialization.sln" /p:Configuration="Release-Net40" /t:"ControlledSerializationJsonConverter:Clean","ControlledSerializationJsonConverter:Rebuild" /v:m /nologo
+& $msbuildPath "Vse.Web.Serialization.sln" /p:Configuration="Release-Net45" /t:"ControlledSerializationJsonConverter:Clean","ControlledSerializationJsonConverter:Rebuild" /v:m /nologo
 
 & $nugetPath pack -Version "$Version" Vse.Web.Serialization.nuspec
 

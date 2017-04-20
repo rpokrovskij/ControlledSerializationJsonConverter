@@ -1,0 +1,37 @@
+publish tests but use https://github.com/dotnet/BenchmarkDotNet/blob/master/README.md , http://benchmarkdotnet.org/
+
+1. Integrate with routines
+2. Json.Net also can be integratable with routines through DefaultContractResolver 
+
+public class ProgramContractResolver : DefaultContractResolver
+{
+    protected override JsonProperty CreateProperty(
+        MemberInfo member,
+        MemberSerialization memberSerialization)
+    {
+        var property = base.CreateProperty(member, memberSerialization);
+        if (property.PropertyName == "Programs")
+        {
+            property.ShouldSerialize = i => false;
+        }
+        return property;
+    }
+}
+https://www.codeproject.com/Articles/1021950/Web-API-Circular-References-with-Many-to-Many-Rela
+
+3. Serialize circular references to TypeScript circular references? 
+
+https://www.sitepen.com/blog/2008/06/17/json-referencing-in-dojo/
+
+
+
+https://softwareengineering.stackexchange.com/questions/254481/how-do-i-resolve-ref-in-a-json-object
+https://www.sitepen.com/blog/2008/06/17/json-referencing-in-dojo/
+
+
+http://stackoverflow.com/questions/23453977/what-is-the-difference-between-preservereferenceshandling-and-referenceloophandl/23461179
+expains
+json.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize;
+json.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Arrays; 
+
+JSON RFC https://tools.ietf.org/html/rfc4627 and simple JSON as a base http://wiki.unity3d.com/index.php/SimpleJSON 

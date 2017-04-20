@@ -1,5 +1,8 @@
 # Controlled Serialization Json Converter
-`ControlledSerializationJsonConverter` extentds `JavaScriptConverter` (customizable part of Microsoft `JavaScriptSerializer`, namespace `System.Web.Script.Serialization`, assembly `System.Web.Extensions`) with number of powerful parameters to avoid carshes by circular references, to limit serialization to certain types or unique objects and to easy configure json formatting. 
+[![NuGet](https://img.shields.io/nuget/v/Vse.Web.Serialization.ControlledSerializationJsonConverter.svg)](https://www.nuget.org/packages/Vse.Web.Serialization.ControlledSerializationJsonConverter)
+[![Coverage Status](https://s3.amazonaws.com/assets.coveralls.io/badges/coveralls_100.svg)](https://coveralls.io/github/rpokrovskij/ControlledSerializationJsonConverter?branch=)
+
+`ControlledSerializationJsonConverter` extentds `JavaScriptConverter` (customizable part of Microsoft `JavaScriptSerializer`, namespace `System.Web.Script.Serialization`, assembly `System.Web.Extensions`) with number of powerful parameters to avoid crashes by walking through circular references, to limit serialization to certain types or unique objects and to easy configure json formatting. 
 
 ## About JavaScriptSerializer  
 `JavaScriptSerializer` was a Microsoft default json serialization tool for ASP platform till MVC5. MVC6 released at 12 August 2016 use `newtonsoft json.net` as default serialization tool. It seems like most ASP developers prefer `newtonsoft json.net` because of its reach serialization customization possibilities using attributes, when `JavaScriptSerializer` supports only `ScriptIgnoreAttribute`. I consider using attributes there as a controversional practice, when DTO class generation is a correct approach. Altough the practice shows that DTO approach should be complemented with the flexible tool that can serialize "everything" in case you need to do it quick without creating DTO. That what is the `ControlledSerializationJsonConverter`. 
@@ -32,7 +35,7 @@ Then serialization looks as:
 ```
 var jss = new JavaScriptSerializer();
 jss.RegisterConverters(new[] { converter });
-var json = jss2.Serialize(item);
+var json = jss.Serialize(item);
 ``` 
 
 Note: `ControlledSerializationJsonConverter` as well as `JavaScriptSerializer` are not thread safe.
@@ -140,5 +143,26 @@ For this case you need to create ASP.MVC JavaScriptSerializerFormatter and regis
     }
 ```
 
+## Performance 
 
-[![Coverage Status](https://s3.amazonaws.com/assets.coveralls.io/badges/coveralls_100.svg)](https://coveralls.io/github/rpokrovskij/ControlledSerializationJsonConverter?branch=)
+Here `ControlledSerializationJsonConverter` (as ***JavaScriptSerializerCustom***) compared with row `JavaScriptSerializer`, `NewtonsoftJson`,`ServiceStack` and `DataContractJsonSerializer` using BenchmarkDotNet
+
+``` ini
+
+BenchmarkDotNet=v0.10.3.0, OS=Microsoft Windows NT 6.2.9200.0
+Processor=Intel(R) Core(TM) i5-2500K CPU 3.30GHz, ProcessorCount=4
+Frequency=3233536 Hz, Resolution=309.2590 ns, Timer=TSC
+  [Host] : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.6.1637.0DEBUG
+  Clr    : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.6.1637.0
+
+Job=Clr  Runtime=Clr  
+
+```
+ |                     Method |          Mean |     StdDev |           Min |           Max |        Median | Rank |   Gen 0 | Allocated |
+ |--------------------------- |-------------- |----------- |-------------- |-------------- |-------------- |----- |-------- |---------- |
+ | ***JavaScriptSerializerCustom*** |   718.7816 us | 27.3497 us |   673.8058 us |   773.9248 us |   713.4613 us |    4 | 33.9844 | 172.03 kB |
+ |       JavaScriptSerializer | 1,921.3099 us | 70.0188 us | 1,787.0424 us | 2,048.8881 us | 1,916.0952 us |    5 | 31.2500 | 269.75 kB |
+ |             NewtonsoftJson |   165.3395 us |  7.5443 us |   151.8159 us |   178.4685 us |   165.5090 us |    1 | 14.4857 |  60.75 kB |
+ | DataContractJsonSerializer |   405.2414 us | 17.1242 us |   372.1024 us |   426.4256 us |   402.6731 us |    3 | 13.8021 |  76.56 kB |
+ |       ServiceStackToString |   211.5505 us |  5.5206 us |   201.5641 us |   220.4368 us |   210.9183 us |    2 |  1.7233 |  31.77 kB |
+

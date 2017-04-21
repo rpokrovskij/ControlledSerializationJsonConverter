@@ -11,8 +11,8 @@ using System.Linq;
 namespace JsonBenchmark
 {
     //[Config(typeof(Config))]
-    [MinColumn, MaxColumn, StdDevColumn, MedianColumn, RankColumn,  ]
-    [ClrJob]//, CoreJob]
+    [MinColumn, MaxColumn, StdDevColumn, MedianColumn, RankColumn]
+    [ClrJob/*, CoreJob*/]
     [HtmlExporter, MarkdownExporter]
     [MemoryDiagnoser, InliningDiagnoser]
     public class BenchmarkHashset

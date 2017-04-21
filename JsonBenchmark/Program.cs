@@ -14,20 +14,19 @@ namespace JsonBenchmark
             //var x = BenchmarkJsonSerializeList.CreateTest();
             //var json = JsonConvert.SerializeObject(x);
 
-            var t = BenchmarkJsonSerializeList.Test;
-            var converter = new ControlledSerializationJsonConverter(new[] { t.GetType() });
-            var jss = new JavaScriptSerializer();
-            jss.RegisterConverters(new[] { converter });
-            var json = jss.Serialize(t);
-            if (json == null)
-                throw new ApplicationException("Test fails");
+            //var t = BenchmarkJsonSerializeList.Test;
+            //var converter = new ControlledSerializationJsonConverter(new[] { t.GetType() });
+            //var jss = new JavaScriptSerializer();
+            //jss.RegisterConverters(new[] { converter });
+            //var json = jss.Serialize(t);
+            //if (json == null)
+            //    throw new ApplicationException("Test fails");
 
-            //var summary4 = BenchmarkRunner.Run<BenchmarkJsonDeserializeList>();
-            var summary3 = BenchmarkRunner.Run<BenchmarkJsonSerializeList>();
-            //BenchmarkRunner.Run<BenchmarkHashset>();
-            //var summary1 =BenchmarkRunner.Run<BenchmarkJsonSerialize>();
-            //var summary2 = BenchmarkRunner.Run<BenchmarkJsonDeserialize>();
-            
+            BenchmarkRunner.Run<BenchmarkHashset>();
+            BenchmarkRunner.Run<BenchmarkJsonDeserializeList>();
+            BenchmarkRunner.Run<BenchmarkJsonSerializeList>();
+            BenchmarkRunner.Run<BenchmarkJsonSerialize>();
+            BenchmarkRunner.Run<BenchmarkJsonDeserialize>();
             
             Console.ReadLine();
         }

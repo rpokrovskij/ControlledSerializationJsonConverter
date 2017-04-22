@@ -168,6 +168,8 @@ Job=Clr  Runtime=Clr
 
  ## Links
  
+ MSDN JavaScriptSerializer https://msdn.microsoft.com/en-us/library/system.web.script.serialization.javascriptserializer(v=vs.110).aspx
+ 
  JOSN RFC 4627 (July 2006)  https://tools.ietf.org/html/rfc4627
  
  JSON RFC 7159 (March 2014) https://tools.ietf.org/html/rfc7159

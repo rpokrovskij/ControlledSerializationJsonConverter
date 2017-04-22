@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{D7E0CC79-2
 		BuildNuget.ps1 = BuildNuget.ps1
 		LICENSE = LICENSE
 		OpenCover.ps1 = OpenCover.ps1
-		README.txt = README.txt
+		README.md = README.md
 		TODO.txt = TODO.txt
 		Vse.Web.Serialization.nuspec = Vse.Web.Serialization.nuspec
 	EndProjectSection

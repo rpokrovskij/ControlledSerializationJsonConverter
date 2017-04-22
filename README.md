@@ -166,3 +166,6 @@ Job=Clr  Runtime=Clr
  | DataContractJsonSerializer |   405.2414 us | 17.1242 us |   372.1024 us |   426.4256 us |   402.6731 us |    3 | 13.8021 |  76.56 kB |
  |       ServiceStackToString |   211.5505 us |  5.5206 us |   201.5641 us |   220.4368 us |   210.9183 us |    2 |  1.7233 |  31.77 kB |
 
+ ## Links
+ JOSN RFC 4627 (July 2006)  https://tools.ietf.org/html/rfc4627
+ JSON RFC 7159 (March 2014) https://tools.ietf.org/html/rfc7159

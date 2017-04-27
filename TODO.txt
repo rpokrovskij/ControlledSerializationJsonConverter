@@ -1,7 +1,5 @@
 1. Integrate Json.Net with routines
 
-2. Json.Net also can be integratable with routines through DefaultContractResolver 
-
 http://stackoverflow.com/questions/23453977/what-is-the-difference-between-preservereferenceshandling-and-referenceloophandl/23461179
 expains
 json.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize;
@@ -23,7 +21,7 @@ public class ProgramContractResolver : DefaultContractResolver
 }
 https://www.codeproject.com/Articles/1021950/Web-API-Circular-References-with-Many-to-Many-Rela
 
-3. Serialize circular references to TypeScript circular references? 
+2. Serialize circular references to TypeScript circular references? 
 
 https://www.sitepen.com/blog/2008/06/17/json-referencing-in-dojo/
 
@@ -31,4 +29,15 @@ https://softwareengineering.stackexchange.com/questions/254481/how-do-i-resolve-
 https://www.sitepen.com/blog/2008/06/17/json-referencing-in-dojo/
 
 
-4. Custom JSON serializer http://wiki.unity3d.com/index.php/SimpleJSON 
+3. Custom JSON serializer http://wiki.unity3d.com/index.php/SimpleJSON 
+
+------------------
+
+ 4. "true" : "false"  - not True False
+
+ 5. JSV ?
+ https://github.com/ServiceStackV3/mythz_blog/blob/master/pages/176.md
+
+ 6. DateTime
+ check how it is parametrized e.g. there
+ https://github.com/ServiceStack/ServiceStack.Text/blob/master/src/ServiceStack.Text/JsonSerializer.cs

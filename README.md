@@ -167,5 +167,9 @@ Job=Clr  Runtime=Clr
  |       ServiceStackToString |   211.5505 us |  5.5206 us |   201.5641 us |   220.4368 us |   210.9183 us |    2 |  1.7233 |  31.77 kB |
 
  ## Links
+ 
+ MSDN JavaScriptSerializer https://msdn.microsoft.com/en-us/library/system.web.script.serialization.javascriptserializer(v=vs.110).aspx
+ 
  JOSN RFC 4627 (July 2006)  https://tools.ietf.org/html/rfc4627
+ 
  JSON RFC 7159 (March 2014) https://tools.ietf.org/html/rfc7159

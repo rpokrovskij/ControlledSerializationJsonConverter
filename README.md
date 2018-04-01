@@ -2,7 +2,10 @@
 [![NuGet](https://img.shields.io/nuget/v/Vse.Web.Serialization.ControlledSerializationJsonConverter.svg)](https://www.nuget.org/packages/Vse.Web.Serialization.ControlledSerializationJsonConverter)
 [![Coverage Status](https://s3.amazonaws.com/assets.coveralls.io/badges/coveralls_100.svg)](https://coveralls.io/github/rpokrovskij/ControlledSerializationJsonConverter?branch=)
 
-`ControlledSerializationJsonConverter` extentds `JavaScriptConverter` (customizable part of Microsoft `JavaScriptSerializer`, namespace `System.Web.Script.Serialization`, assembly `System.Web.Extensions`) with number of powerful parameters to avoid crashes by walking through circular references, to limit serialization to certain types or unique objects and to easy configure json formatting. 
+`ControlledSerializationJsonConverter` extentds `JavaScriptConverter` (customizable part of Microsoft `JavaScriptSerializer`, namespace `System.Web.Script.Serialization`, assembly `System.Web.Extensions`) with number of powerful functionality:
+1) to easy configure json formatting for certai types. 
+2) avoid crashes by walking through circular references (setting recursion depth).
+3) limit serialization to certain types or unique objects 
 
 ## About JavaScriptSerializer  
 `JavaScriptSerializer` was a Microsoft default json serialization tool for ASP platform till MVC5. MVC6 released at 12 August 2016 use `newtonsoft json.net` as default serialization tool. It seems like most ASP developers prefer `newtonsoft json.net` because of its reach serialization customization possibilities using attributes, when `JavaScriptSerializer` supports only `ScriptIgnoreAttribute`. I consider using attributes there as a controversional practice, when DTO class generation is a correct approach. Altough the practice shows that DTO approach should be complemented with the flexible tool that can serialize "everything" in case you need to do it quick without creating DTO. That what is the `ControlledSerializationJsonConverter`. 
